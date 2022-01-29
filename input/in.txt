@@ -1,0 +1,17 @@
+Proceso mi_proceso
+    Definir a Como Real;
+    a <- 3.51;
+    Segun a Hacer
+        caso 5/2:
+            Escribir "2";
+            Escribir "5";
+        caso 7/2:
+            Escribir "3";
+            c <- "";
+            Repetir
+                Leer c;
+            Hasta Que c="salir"
+        De Otro Modo:
+            Escribir "4";
+    FinSegun
+FinProceso
