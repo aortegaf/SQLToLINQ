@@ -1,5 +1,5 @@
-SELECT * FROM usuarios
+SELECT *
+FROM STUDENT_LIST;
 
-
---> var AllUsers = from u in usuarios
-                        select u;
+-- var result = from s in student_list
+--                   select s;

@@ -13,18 +13,18 @@ public class Main {
     public static void main(String[] args) {
         try
         {
-            PseIntGrammarLexer lexer;
+            SqlLexer lexer;
             if (args.length>0)
-                lexer = new PseIntGrammarLexer(CharStreams.fromFileName(args[0]));
+                lexer = new SqlLexer(CharStreams.fromFileName(args[0]));
             else
-                lexer = new PseIntGrammarLexer(CharStreams.fromStream(System.in));
+                lexer = new SqlLexer(CharStreams.fromStream(System.in));
 
             CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-            PseIntGrammarParser parser = new PseIntGrammarParser(tokens);
-            ParseTree tree = parser.programa();
+            SqlParser parser = new SqlParser(tokens);
+            ParseTree tree = parser.root();
             ParseTreeWalker walker = new ParseTreeWalker();
-            walker.walk(new PythonTranslate(), tree);
+            walker.walk(new LINQ_Translate(), tree);
         }
         catch (Exception e)
         {
