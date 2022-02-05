@@ -1,4 +1,4 @@
-// Generated from /home/andres/Documentos/2021 - II/Lenguajes de Programación/Proyecto/SQLToLINQ/grammar/SqlParser.g4 by ANTLR 4.9.2
+// Generated from C:/Users/nxpan/Desktop/LenguajesProgr/proy2/SQLToLINQ/grammar\SqlParser.g4 by ANTLR 4.9.2
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -2818,6 +2818,16 @@ public interface SqlParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFromClause(SqlParser.FromClauseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SqlParser#whereClause}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhereClause(SqlParser.WhereClauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SqlParser#whereClause}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhereClause(SqlParser.WhereClauseContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SqlParser#groupByClause}.
 	 * @param ctx the parse tree

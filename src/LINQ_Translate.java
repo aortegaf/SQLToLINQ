@@ -41,6 +41,29 @@ public class LINQ_Translate extends SqlParserBaseListener{
     }
 
     @Override
+    public void enterWhereClause(SqlParser.WhereClauseContext ctx) {
+        super.enterWhereClause(ctx);
+        if(ctx.WHERE() != null){
+            key = "where";
+            keys.put(key, new ArrayList<>());
+        }
+    }
+
+    @Override
+    public void enterPredicateExpression(SqlParser.PredicateExpressionContext ctx) {
+        super.enterPredicateExpression(ctx);
+        if(key.equals("where"))
+            keys.get(key).add( createInstance(ctx.getText(),null));
+    }
+
+
+    @Override
+    public void enterLogicalOperator(SqlParser.LogicalOperatorContext ctx) {
+        super.enterLogicalOperator(ctx);
+        keys.get(key).add( createInstance(ctx.getText(),null));
+    }
+
+    @Override
     public void enterOrderByClause(SqlParser.OrderByClauseContext ctx) {
         super.enterOrderByClause(ctx);
         key = "orderby";
@@ -68,7 +91,10 @@ public class LINQ_Translate extends SqlParserBaseListener{
         if(key.equals("orderby"))
         {
             keys.get(key).add( createInstance(ctx.getText(),currentProperty));
+            currentProperty = "";
         }
+        else if(key.equals("where"))
+        {}
         else
             keys.get(key).add( createInstance(ctx.getText(),null));
     }
@@ -76,10 +102,33 @@ public class LINQ_Translate extends SqlParserBaseListener{
     @Override
     public void exitRoot(SqlParser.RootContext ctx) {
         super.exitRoot(ctx);
+//        for (String s: keys.keySet()
+//             ) {
+//            System.out.println("Key+" +s );
+//            for (ModelIdPropertie mip:
+//                keys.get(s) ) {
+//                System.out.println("Mip=" + mip.Id + ", p=" + mip.Propertie);
+//            }
+//        }
         while(keys.size() != 0){
             String table_name = keys.get("from").get(0).Id.toLowerCase(Locale.ROOT);
             System.out.println("from " + table_name.charAt(0) + " in " + table_name);
             keys.remove("from");
+
+            if(keys.get("where") != null) {
+                System.out.print("where ");
+                int size = keys.get("where").size();
+                for (int i = 0; i<size; i++) {
+                    String id = keys.get("where").get(i).Id.toLowerCase(Locale.ROOT);
+                    if( i % 2 == 0)
+                        System.out.print( table_name.charAt(0)+ "." + id + " ");
+                    else
+                        System.out.print( id + " ");
+                }
+                System.out.println();
+                keys.remove("where");
+            }
+
             if(keys.get("orderby") != null) {
                 int size = keys.get("orderby").size();
                 if(size > 1){

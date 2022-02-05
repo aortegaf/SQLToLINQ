@@ -1,0 +1,4 @@
+var result = from c in customers
+where c.state=1
+orderby c.state descending, c.city
+select new {c.state, c.city};

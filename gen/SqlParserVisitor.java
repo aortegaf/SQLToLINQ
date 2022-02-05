@@ -1,4 +1,4 @@
-// Generated from /home/andres/Documentos/2021 - II/Lenguajes de Programación/Proyecto/SQLToLINQ/grammar/SqlParser.g4 by ANTLR 4.9.2
+// Generated from C:/Users/nxpan/Desktop/LenguajesProgr/proy2/SQLToLINQ/grammar\SqlParser.g4 by ANTLR 4.9.2
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -1667,6 +1667,12 @@ public interface SqlParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFromClause(SqlParser.FromClauseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#whereClause}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhereClause(SqlParser.WhereClauseContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#groupByClause}.
 	 * @param ctx the parse tree

@@ -1,0 +1,3 @@
+var result = from s in student_list
+where s.student_age>18 && s.student_age<25 || s.student_age>50
+select s.student_name;

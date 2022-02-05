@@ -1,4 +1,4 @@
-// Generated from /home/andres/Documentos/2021 - II/Lenguajes de Programación/Proyecto/SQLToLINQ/grammar/SqlParser.g4 by ANTLR 4.9.2
+// Generated from C:/Users/nxpan/Desktop/LenguajesProgr/proy2/SQLToLINQ/grammar\SqlParser.g4 by ANTLR 4.9.2
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -3034,6 +3034,18 @@ public class SqlParserBaseListener implements SqlParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFromClause(SqlParser.FromClauseContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterWhereClause(SqlParser.WhereClauseContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWhereClause(SqlParser.WhereClauseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

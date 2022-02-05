@@ -1,0 +1,3 @@
+var result = from s in student_list
+where s.student_age>18
+select s.student_name;

@@ -1,4 +1,4 @@
-// Generated from /home/andres/Documentos/2021 - II/Lenguajes de Programación/Proyecto/SQLToLINQ/grammar/SqlParser.g4 by ANTLR 4.9.2
+// Generated from C:/Users/nxpan/Desktop/LenguajesProgr/proy2/SQLToLINQ/grammar\SqlParser.g4 by ANTLR 4.9.2
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -1774,6 +1774,13 @@ public class SqlParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitFromClause(SqlParser.FromClauseContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitWhereClause(SqlParser.WhereClauseContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
