@@ -146,17 +146,24 @@ public class LINQ_Translate extends SqlParserBaseListener{
     }
 
     @Override
+    public void enterGroupByClause(SqlParser.GroupByClauseContext ctx) {
+        super.enterGroupByClause(ctx);
+        key = "groupby";
+        keys.put(key, new ArrayList<>());
+    }
+
+    @Override
     public void exitRoot(SqlParser.RootContext ctx) {
         super.exitRoot(ctx);
         Hashtable<String, String> idsVar = new Hashtable<>();
-//        for (String s: keys.keySet()
-//             ) {
-//            System.out.println("Key+" +s );
-//            for (ModelIdPropertie mip:
-//                keys.get(s) ) {
-//                System.out.println("Mip=" + mip.Id + ", p=" + mip.Propertie);
-//            }
-//        }
+        for (String s: keys.keySet()
+             ) {
+            System.out.println("Key+" +s );
+            for (ModelIdPropertie mip:
+                keys.get(s) ) {
+                System.out.println("Mip=" + mip.Id + ", p=" + mip.Propertie);
+            }
+        }
         while(keys.size() != 0){
             String table_name = keys.get("from").get(0).Id.toLowerCase(Locale.ROOT);
             System.out.println("from " + table_name.charAt(0) + " in " + table_name);
@@ -298,6 +305,84 @@ public class LINQ_Translate extends SqlParserBaseListener{
                         System.out.println();
 
                     keys.remove("orderby");
+                }
+            }
+            if(keys.get("groupby") != null) {
+                int size = keys.get("groupby").size();
+                if(size > 1){
+                    System.out.print("group new ");
+                    String first_id = keys.get("groupby").get(0).Id.toLowerCase(Locale.ROOT);
+
+                    String idTableTmp1 = "";
+                    String keyTable1 = "";
+                    try
+                    {
+                        keyTable1 =  keys.get("groupby").get(0).Id.toLowerCase(Locale.ROOT).replace(".", "@").split("@")[0];
+                    }
+                    catch (Exception e)
+                    {
+                        keyTable1 = "";
+                    }
+
+                    if(idsVar.containsKey(keyTable1))
+                    {
+                        idTableTmp1 = idsVar.get(keyTable1);
+                    }
+
+                    first_id = first_id.replace(keyTable1, idTableTmp1);
+                    System.out.print(first_id);
+
+                    for (int i = 1; i<size; i++) {
+                        String id = keys.get("groupby").get(i).Id.toLowerCase(Locale.ROOT);
+
+                        String idTableTmp = "";
+                        String keyTable = "";
+                        try
+                        {
+                            keyTable =  keys.get("groupby").get(i).Id.toLowerCase(Locale.ROOT).replace(".", "@").split("@")[0];
+                        }
+                        catch (Exception e)
+                        {
+                            keyTable = "";
+                        }
+
+                        if(idsVar.containsKey(keyTable))
+                        {
+                            idTableTmp = idsVar.get(keyTable);
+                        }
+
+                        id = id.replace(keyTable, idTableTmp);
+                        System.out.print(", " + id);
+                    }
+                    System.out.print("}");
+                    keys.remove("groupby");
+                }else{
+                    String id = keys.get("select").get(0).Id.toLowerCase(Locale.ROOT);
+
+                    String idTableTmp1 = "";
+                    String keyTable1 = "";
+                    try
+                    {
+                        keyTable1 =  keys.get("groupby").get(0).Id.toLowerCase(Locale.ROOT).replace(".", "@").split("@")[0];
+                    }
+                    catch (Exception e)
+                    {
+                        keyTable1 = "";
+                    }
+
+                    if(idsVar.containsKey(keyTable1))
+                    {
+                        idTableTmp1 = idsVar.get(keyTable1);
+                    }
+
+                    id = id.replace(keyTable1, idTableTmp1);
+
+                    if(id.equals("*")){
+                        System.out.print("groupby " + table_name.charAt(0));
+                    }else{
+                        System.out.print("groupby " + id);
+                    }
+                    keys.remove("groupby");
                 }
             }
             if(keys.get("select") != null) {
