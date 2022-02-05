@@ -36,6 +36,13 @@ public class LINQ_Translate extends SqlParserBaseListener{
     }
 
     @Override
+    public void enterOrderByClause(SqlParser.OrderByClauseContext ctx) {
+        super.enterOrderByClause(ctx);
+        key = "orderby";
+        keys.put(key, new ArrayList<>());
+    }
+
+    @Override
     public void enterSimpleId(SqlParser.SimpleIdContext ctx) {
         super.enterSimpleId(ctx);
         keys.get(key).add(ctx.getText());
@@ -48,6 +55,11 @@ public class LINQ_Translate extends SqlParserBaseListener{
             String table_name = keys.get("from").get(0).toLowerCase(Locale.ROOT);
             System.out.println("from " + table_name.charAt(0) + " in " + table_name);
             keys.remove("from");
+            if(keys.get("orderby") != null) {
+                String id = keys.get("orderby").get(0).toLowerCase(Locale.ROOT);
+                System.out.println("orderby " + table_name.charAt(0) + "." + id);
+                keys.remove("orderby");
+            }
             if(keys.get("select") != null) {
                 int size = keys.get("select").size();
                 if(size > 1){

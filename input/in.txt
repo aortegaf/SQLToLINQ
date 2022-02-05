@@ -1,5 +1,10 @@
-SELECT *
-FROM STUDENT_LIST;
+SELECT
+   STUDENT_NAME
+FROM
+   STUDENT_LIST
+ORDER BY
+   STUDENT_NAME;
 
 -- var result = from s in student_list
---                   select s;
+--                   orderby s.student_name
+--                   select s.student_name;
