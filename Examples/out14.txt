@@ -1,0 +1,6 @@
+var result = from t in table_1
+join ta0 in table2
+on t.userid equals ta0.userid
+join ta4 in table3
+on ta0.userid equals ta4.userid
+select t.column_list;

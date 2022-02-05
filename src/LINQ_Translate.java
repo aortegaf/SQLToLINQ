@@ -54,8 +54,22 @@ public class LINQ_Translate extends SqlParserBaseListener{
         super.enterPredicateExpression(ctx);
         if(key.equals("where"))
             keys.get(key).add( createInstance(ctx.getText(),null));
+        if(key.equals("join"))
+            keys.get(key).add( createInstance(ctx.getText(),null));
     }
 
+    @Override
+    public void enterInnerJoin(SqlParser.InnerJoinContext ctx) {
+        super.enterInnerJoin(ctx);
+        if(ctx.JOIN() != null)
+        {
+            if(!keys.containsKey("join"))
+            {
+                key = "join";
+                keys.put(key, new ArrayList<>());
+            }
+        }
+    }
 
     @Override
     public void enterLogicalOperator(SqlParser.LogicalOperatorContext ctx) {
@@ -100,28 +114,91 @@ public class LINQ_Translate extends SqlParserBaseListener{
     }
 
     @Override
+    public void enterSelectSpec(SqlParser.SelectSpecContext ctx) {
+        super.enterSelectSpec(ctx);
+        if(ctx.DISTINCT() != null) {
+            key = "distinct";
+            keys.put(key, new ArrayList<>());
+            keys.get(key).add(createInstance(ctx.DISTINCT().getText(), null));
+        }
+    }
+
+    @Override
     public void exitRoot(SqlParser.RootContext ctx) {
         super.exitRoot(ctx);
-//        for (String s: keys.keySet()
-//             ) {
-//            System.out.println("Key+" +s );
-//            for (ModelIdPropertie mip:
-//                keys.get(s) ) {
-//                System.out.println("Mip=" + mip.Id + ", p=" + mip.Propertie);
-//            }
-//        }
+        Hashtable<String, String> idsVar = new Hashtable<>();
+        for (String s: keys.keySet()
+             ) {
+            System.out.println("Key+" +s );
+            for (ModelIdPropertie mip:
+                keys.get(s) ) {
+                System.out.println("Mip=" + mip.Id + ", p=" + mip.Propertie);
+            }
+        }
         while(keys.size() != 0){
             String table_name = keys.get("from").get(0).Id.toLowerCase(Locale.ROOT);
             System.out.println("from " + table_name.charAt(0) + " in " + table_name);
             keys.remove("from");
+
+            idsVar.put(table_name, table_name.substring(0,1));
+
+            if(keys.get("join") != null) {
+                int size = keys.get("join").size();
+                for (int i = 0; i<size; i+=4) {
+                    String id = keys.get("join").get(i).Id.toLowerCase(Locale.ROOT);
+                    String condition = keys.get("join").get(i+1).Id.toLowerCase(Locale.ROOT).replace("=", " equals ");
+                    String firstTable = keys.get("join").get(i+2).Id.toLowerCase(Locale.ROOT);
+                    String secondTable = keys.get("join").get(i+3).Id.toLowerCase(Locale.ROOT);
+
+                    if(!idsVar.containsKey(id))
+                        idsVar.put(id, id.substring(0,2) + i);
+
+                    String idFisrtTableTmp = "";
+                    if(idsVar.containsKey(firstTable))
+                        idFisrtTableTmp = idsVar.get(firstTable);
+
+                    String idSecondTableTmp = "";
+                    if(idsVar.containsKey(secondTable))
+                        idSecondTableTmp = idsVar.get(secondTable);
+
+                    condition = condition.replace(firstTable, idFisrtTableTmp);
+                    condition = condition.replace(secondTable, idSecondTableTmp);
+
+                    System.out.println( "join " + idsVar.get(id) + " in " + id + " ");
+                    System.out.println( "on " + condition);
+                }
+                keys.remove("join");
+            }
 
             if(keys.get("where") != null) {
                 System.out.print("where ");
                 int size = keys.get("where").size();
                 for (int i = 0; i<size; i++) {
                     String id = keys.get("where").get(i).Id.toLowerCase(Locale.ROOT);
+
                     if( i % 2 == 0)
-                        System.out.print( table_name.charAt(0)+ "." + id + " ");
+                    {
+                        String idTableTmp = "";
+                        String keyTable = "";
+                        try
+                        {
+                            keyTable =  keys.get("where").get(i).Id.toLowerCase(Locale.ROOT).replace(".", "@").split("@")[0];
+                        }
+                        catch (Exception e)
+                        {
+                            keyTable = "";
+                        }
+
+                        if(idsVar.containsKey(keyTable))
+                        {
+                            idTableTmp = idsVar.get(keyTable);
+                        }
+
+                        id = id.replace(keyTable, idTableTmp);
+
+                        System.out.print( id + " ");
+
+                    }
                     else
                         System.out.print( id + " ");
                 }
@@ -184,6 +261,10 @@ public class LINQ_Translate extends SqlParserBaseListener{
                     }
                     keys.remove("select");
                 }
+            }
+            if(keys.get("distinct") != null) {
+                System.out.print(" " + keys.get("distinct").get(0).Id.toLowerCase(Locale.ROOT));
+                keys.remove("distinct");
             }
         }
         System.out.println(";");

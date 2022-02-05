@@ -1,0 +1,4 @@
+var result = from t in table_name
+where t.search_condition
+orderby t.select_list descending
+select t.select_list distinct;
