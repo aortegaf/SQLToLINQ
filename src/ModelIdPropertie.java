@@ -9,7 +9,7 @@ public class ModelIdPropertie {
         Propertie = propertie;
     }
 
-    public void setPropertie(String propertie) {
-        Propertie = propertie;
+    public void setId(String id) {
+        Id = id;
     }
 }

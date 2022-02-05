@@ -113,6 +113,28 @@ public class LINQ_Translate extends SqlParserBaseListener{
             keys.get(key).add( createInstance(ctx.getText(),null));
     }
 
+    int indexOrder = 0;
+    int indexSelect = 0;
+
+    @Override
+    public void enterDottedId(SqlParser.DottedIdContext ctx) {
+        super.enterDottedId(ctx);
+        if(key.equals("orderby"))
+        {
+            String currentId = keys.get(key).get(indexOrder).Id;
+            keys.get(key).get(indexOrder).setId(currentId + ctx.getText());
+            indexOrder++;
+        }
+
+        if(key.equals("select"))
+        {
+            String currentId = keys.get(key).get(indexSelect).Id;
+            keys.get(key).get(indexSelect).setId(currentId + ctx.getText());
+            indexSelect++;
+        }
+    }
+
+
     @Override
     public void enterSelectSpec(SqlParser.SelectSpecContext ctx) {
         super.enterSelectSpec(ctx);
@@ -127,14 +149,14 @@ public class LINQ_Translate extends SqlParserBaseListener{
     public void exitRoot(SqlParser.RootContext ctx) {
         super.exitRoot(ctx);
         Hashtable<String, String> idsVar = new Hashtable<>();
-        for (String s: keys.keySet()
-             ) {
-            System.out.println("Key+" +s );
-            for (ModelIdPropertie mip:
-                keys.get(s) ) {
-                System.out.println("Mip=" + mip.Id + ", p=" + mip.Propertie);
-            }
-        }
+//        for (String s: keys.keySet()
+//             ) {
+//            System.out.println("Key+" +s );
+//            for (ModelIdPropertie mip:
+//                keys.get(s) ) {
+//                System.out.println("Mip=" + mip.Id + ", p=" + mip.Propertie);
+//            }
+//        }
         while(keys.size() != 0){
             String table_name = keys.get("from").get(0).Id.toLowerCase(Locale.ROOT);
             System.out.println("from " + table_name.charAt(0) + " in " + table_name);
@@ -211,14 +233,52 @@ public class LINQ_Translate extends SqlParserBaseListener{
                 if(size > 1){
                     System.out.print("orderby ");
                     String first_id = keys.get("orderby").get(0).Id.toLowerCase(Locale.ROOT);
-                    System.out.print(table_name.charAt(0) + "." + first_id);
+
+                    String idTableTmp = "";
+                    String keyTable = "";
+                    try
+                    {
+                        keyTable =  keys.get("orderby").get(0).Id.toLowerCase(Locale.ROOT).replace(".", "@").split("@")[0];
+                    }
+                    catch (Exception e)
+                    {
+                        keyTable = "";
+                    }
+
+                    if(idsVar.containsKey(keyTable))
+                    {
+                        idTableTmp = idsVar.get(keyTable);
+                    }
+
+                    first_id = first_id.replace(keyTable, idTableTmp);
+
+                    System.out.print(first_id);
                     if(keys.get("orderby").get(0).Propertie != null )
                     {
                         System.out.print( " " + keys.get("orderby").get(0).Propertie);
                     }
+
                     for (int i = 1; i<size; i++) {
                         String id = keys.get("orderby").get(i).Id.toLowerCase(Locale.ROOT);
-                        System.out.print(", " + table_name.charAt(0)+ "." + id);
+                        String idTableTmp1 = "";
+                        String keyTable1 = "";
+                        try
+                        {
+                            keyTable1 =  keys.get("orderby").get(i).Id.toLowerCase(Locale.ROOT).replace(".", "@").split("@")[0];
+                        }
+                        catch (Exception e)
+                        {
+                            keyTable1 = "";
+                        }
+
+                        if(idsVar.containsKey(keyTable1))
+                        {
+                            idTableTmp1 = idsVar.get(keyTable1);
+                        }
+
+                        id = id.replace(keyTable1, idTableTmp1);
+
+                        System.out.print(", " + id);
                         if(keys.get("orderby").get(i).Propertie != null )
                         {
                             System.out.print( " " + keys.get("orderby").get(i).Propertie);
@@ -245,19 +305,75 @@ public class LINQ_Translate extends SqlParserBaseListener{
                 if(size > 1){
                     System.out.print("select new {");
                     String first_id = keys.get("select").get(0).Id.toLowerCase(Locale.ROOT);
-                    System.out.print(table_name.charAt(0) + "." + first_id);
+
+                    String idTableTmp1 = "";
+                    String keyTable1 = "";
+                    try
+                    {
+                        keyTable1 =  keys.get("select").get(0).Id.toLowerCase(Locale.ROOT).replace(".", "@").split("@")[0];
+                    }
+                    catch (Exception e)
+                    {
+                        keyTable1 = "";
+                    }
+
+                    if(idsVar.containsKey(keyTable1))
+                    {
+                        idTableTmp1 = idsVar.get(keyTable1);
+                    }
+
+                    first_id = first_id.replace(keyTable1, idTableTmp1);
+                    System.out.print(first_id);
+
                     for (int i = 1; i<size; i++) {
                         String id = keys.get("select").get(i).Id.toLowerCase(Locale.ROOT);
-                        System.out.print(", " + table_name.charAt(0)+ "." + id);
+
+                        String idTableTmp = "";
+                        String keyTable = "";
+                        try
+                        {
+                            keyTable =  keys.get("select").get(i).Id.toLowerCase(Locale.ROOT).replace(".", "@").split("@")[0];
+                        }
+                        catch (Exception e)
+                        {
+                            keyTable = "";
+                        }
+
+                        if(idsVar.containsKey(keyTable))
+                        {
+                            idTableTmp = idsVar.get(keyTable);
+                        }
+
+                        id = id.replace(keyTable, idTableTmp);
+                        System.out.print(", " + id);
                     }
                     System.out.print("}");
                     keys.remove("select");
                 }else{
                     String id = keys.get("select").get(0).Id.toLowerCase(Locale.ROOT);
+
+                    String idTableTmp1 = "";
+                    String keyTable1 = "";
+                    try
+                    {
+                        keyTable1 =  keys.get("select").get(0).Id.toLowerCase(Locale.ROOT).replace(".", "@").split("@")[0];
+                    }
+                    catch (Exception e)
+                    {
+                        keyTable1 = "";
+                    }
+
+                    if(idsVar.containsKey(keyTable1))
+                    {
+                        idTableTmp1 = idsVar.get(keyTable1);
+                    }
+
+                    id = id.replace(keyTable1, idTableTmp1);
+
                     if(id.equals("*")){
                         System.out.print("select " + table_name.charAt(0));
                     }else{
-                        System.out.print("select " + table_name.charAt(0) + "." + id);
+                        System.out.print("select " + id);
                     }
                     keys.remove("select");
                 }
