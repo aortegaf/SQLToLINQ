@@ -1,0 +1,3 @@
+var result = from o in orders
+group o by new {o.state, o.date}
+select o.state;

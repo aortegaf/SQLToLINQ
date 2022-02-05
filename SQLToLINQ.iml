@@ -11,7 +11,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/antlr/antlr-4.9.3-complete.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -1,0 +1,7 @@
+var result = from o in orders
+join de0 in delivery
+on o.orderid equals de0.orderid
+where de0.state='delivered'
+group o by new {o.state, o.date}
+orderby o.state
+select o.state;
