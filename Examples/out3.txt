@@ -1,0 +1,2 @@
+var result = from s in student_list
+select s;

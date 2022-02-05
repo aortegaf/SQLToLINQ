@@ -1,0 +1,3 @@
+var result = from s in student_list
+orderby s.student_name ascending, s.student_age descending
+select s.student_name;

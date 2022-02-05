@@ -13,7 +13,12 @@ public class LINQ_Translate extends SqlParserBaseListener{
         System.out.print("var result = ");
     }
 
-    Hashtable<String, ArrayList<String>> keys = new Hashtable<String, ArrayList<String>>();
+    ModelIdPropertie createInstance(String id, String propertie)
+    {
+        return new ModelIdPropertie(id, propertie);
+    }
+
+    Hashtable<String, ArrayList<ModelIdPropertie>> keys = new Hashtable<String, ArrayList<ModelIdPropertie>>();
     String key = null;
 
     @Override
@@ -22,7 +27,7 @@ public class LINQ_Translate extends SqlParserBaseListener{
         key = "select";
         keys.put(key, new ArrayList<>());
         if (ctx.STAR() != null){
-            keys.get(key).add("*");
+            keys.get(key).add( createInstance("*", null));
         }
     }
 
@@ -43,37 +48,86 @@ public class LINQ_Translate extends SqlParserBaseListener{
     }
 
     @Override
+    public void enterOrderByExpression(SqlParser.OrderByExpressionContext ctx) {
+        super.enterOrderByExpression(ctx);
+        if(ctx.DESC() != null )
+        {
+            currentProperty = "descending";
+        }
+        else if(ctx.ASC() != null)
+        {
+            currentProperty = "ascending";
+        }
+    }
+
+    String currentProperty = "";
+
+    @Override
     public void enterSimpleId(SqlParser.SimpleIdContext ctx) {
         super.enterSimpleId(ctx);
-        keys.get(key).add(ctx.getText());
+        if(key.equals("orderby"))
+        {
+            keys.get(key).add( createInstance(ctx.getText(),currentProperty));
+        }
+        else
+            keys.get(key).add( createInstance(ctx.getText(),null));
     }
 
     @Override
     public void exitRoot(SqlParser.RootContext ctx) {
         super.exitRoot(ctx);
         while(keys.size() != 0){
-            String table_name = keys.get("from").get(0).toLowerCase(Locale.ROOT);
+            String table_name = keys.get("from").get(0).Id.toLowerCase(Locale.ROOT);
             System.out.println("from " + table_name.charAt(0) + " in " + table_name);
             keys.remove("from");
             if(keys.get("orderby") != null) {
-                String id = keys.get("orderby").get(0).toLowerCase(Locale.ROOT);
-                System.out.println("orderby " + table_name.charAt(0) + "." + id);
-                keys.remove("orderby");
+                int size = keys.get("orderby").size();
+                if(size > 1){
+                    System.out.print("orderby ");
+                    String first_id = keys.get("orderby").get(0).Id.toLowerCase(Locale.ROOT);
+                    System.out.print(table_name.charAt(0) + "." + first_id);
+                    if(keys.get("orderby").get(0).Propertie != null )
+                    {
+                        System.out.print( " " + keys.get("orderby").get(0).Propertie);
+                    }
+                    for (int i = 1; i<size; i++) {
+                        String id = keys.get("orderby").get(i).Id.toLowerCase(Locale.ROOT);
+                        System.out.print(", " + table_name.charAt(0)+ "." + id);
+                        if(keys.get("orderby").get(i).Propertie != null )
+                        {
+                            System.out.print( " " + keys.get("orderby").get(i).Propertie);
+                        }
+                    }
+                    System.out.println();
+                    keys.remove("orderby");
+                }else{
+                    String id = keys.get("orderby").get(0).Id.toLowerCase(Locale.ROOT);
+                    System.out.print("orderby " + table_name.charAt(0) + "." + id);
+
+                    if(keys.get("orderby").get(0).Propertie != null )
+                    {
+                        System.out.println( " " + keys.get("orderby").get(0).Propertie);
+                    }
+                    else
+                        System.out.println();
+
+                    keys.remove("orderby");
+                }
             }
             if(keys.get("select") != null) {
                 int size = keys.get("select").size();
                 if(size > 1){
                     System.out.print("select new {");
-                    String first_id = keys.get("select").get(0).toLowerCase(Locale.ROOT);
+                    String first_id = keys.get("select").get(0).Id.toLowerCase(Locale.ROOT);
                     System.out.print(table_name.charAt(0) + "." + first_id);
                     for (int i = 1; i<size; i++) {
-                        String id = keys.get("select").get(0).toLowerCase(Locale.ROOT);
+                        String id = keys.get("select").get(i).Id.toLowerCase(Locale.ROOT);
                         System.out.print(", " + table_name.charAt(0)+ "." + id);
                     }
                     System.out.print("}");
                     keys.remove("select");
                 }else{
-                    String id = keys.get("select").get(0).toLowerCase(Locale.ROOT);
+                    String id = keys.get("select").get(0).Id.toLowerCase(Locale.ROOT);
                     if(id.equals("*")){
                         System.out.print("select " + table_name.charAt(0));
                     }else{

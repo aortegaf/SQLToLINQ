@@ -3,8 +3,9 @@ SELECT
 FROM
    STUDENT_LIST
 ORDER BY
-   STUDENT_NAME;
+   STUDENT_NAME ASC,
+   STUDENT_AGE DESC;
 
 -- var result = from s in student_list
---                   orderby s.student_name
+--                   orderby s.student_name, s.student_age
 --                   select s.student_name;

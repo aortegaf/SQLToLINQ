@@ -1,0 +1,2 @@
+var result = from e in employees
+select new {e.last_name, e.first_name, e.job_title};
