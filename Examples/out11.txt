@@ -1,4 +1,4 @@
-var result = from c in customers
-where c.state=1
-orderby c.state descending, c.city
-select new {c.state, c.city};
+from a in albums
+where a.artistid>18 && a.artistid<50 
+orderby a.title descending
+select new {a.title, a.artistid}

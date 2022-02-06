@@ -1,2 +1,2 @@
-var result = from s in student_list
-select s.student_name;
+from a in album
+select a.title

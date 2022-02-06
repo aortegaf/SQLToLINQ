@@ -9,7 +9,6 @@ public class LINQ_Translate extends SqlParserBaseListener{
     @Override
     public void enterRoot(SqlParser.RootContext ctx) {
         super.enterRoot(ctx);
-        System.out.print("var result = (");
     }
 
     ModelIdPropertie createInstance(String id, String propertie)
@@ -141,17 +140,6 @@ public class LINQ_Translate extends SqlParserBaseListener{
         }
     }
 
-
-    @Override
-    public void enterSelectSpec(SqlParser.SelectSpecContext ctx) {
-        super.enterSelectSpec(ctx);
-        if(ctx.DISTINCT() != null) {
-            key = "distinct";
-            keys.put(key, new ArrayList<>());
-            keys.get(key).add(createInstance(ctx.DISTINCT().getText(), null));
-        }
-    }
-
     @Override
     public void enterGroupByClause(SqlParser.GroupByClauseContext ctx) {
         super.enterGroupByClause(ctx);
@@ -205,12 +193,13 @@ public class LINQ_Translate extends SqlParserBaseListener{
                 }
                 keys.remove("join");
             }
-
             if(keys.get("where") != null) {
                 System.out.print("where ");
                 int size = keys.get("where").size();
                 for (int i = 0; i<size; i++) {
                     String id = keys.get("where").get(i).Id.toLowerCase(Locale.ROOT);
+
+                    id = id.replace("=", "==");
 
                     if( i % 2 == 0)
                     {
@@ -224,9 +213,6 @@ public class LINQ_Translate extends SqlParserBaseListener{
                         {
                             keyTable = "";
                         }
-
-                        if(id.contains("="))
-                            id.replace("=", " == ");
 
                         if(idsVar.containsKey(keyTable))
                         {
@@ -521,11 +507,6 @@ public class LINQ_Translate extends SqlParserBaseListener{
                     }
                 }
             }
-            if(keys.get("distinct") != null) {
-                System.out.print(" " + keys.get("distinct").get(0).Id.toLowerCase(Locale.ROOT));
-                keys.remove("distinct");
-            }
         }
-        System.out.println(";");
     }
 }

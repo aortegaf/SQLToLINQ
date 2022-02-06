@@ -1,8 +1,6 @@
-var result = from t in table_1
-join ta0 in table2
-on t.userid equals ta0.userid
-join ta4 in table3
-on ta0.userid equals ta4.userid
-where ta4.age>20
-orderby ta4.age descending, t.column_list ascending
-select new {t.column_list, ta4.age};
+from a in albums
+join ar0 in artists 
+on a.artistid equals ar0.artistid
+where ar0.artistid==22 
+orderby a.title descending
+select new {a.artistid, ar0.name, a.title}

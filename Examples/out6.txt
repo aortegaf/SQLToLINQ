@@ -1,3 +1,3 @@
-var result = from s in student_list
-orderby s.student_name ascending
-select s.student_name;
+from a in albums
+orderby a.title ascending
+select a.title

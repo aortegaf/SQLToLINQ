@@ -1,4 +1,5 @@
-var result = from t in table_name
-where t.search_condition
-orderby t.select_list descending
-select t.select_list distinct;
+from a in albums
+join ar0 in artists 
+on a.artistid equals ar0.artistid
+where ar0.artistid==22 
+select new {a.artistid, ar0.name, a.title}
