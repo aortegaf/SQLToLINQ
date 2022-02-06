@@ -46,7 +46,7 @@ utilizadas para el desarrollo del proyecto.
 
 ### Tutorial LINQ
 
-- https://www.tutorialsteacher.com/linq/linq-filtering-operators-where
+- https://www.tutorialsteacher.com/linq
 
 ### Gramática usada:
 
