@@ -10,7 +10,7 @@ public class LINQ_Translate extends SqlParserBaseListener{
     @Override
     public void enterRoot(SqlParser.RootContext ctx) {
         super.enterRoot(ctx);
-        System.out.print("var result = ");
+        System.out.print("var result = (");
     }
 
     ModelIdPropertie createInstance(String id, String propertie)
@@ -225,6 +225,9 @@ public class LINQ_Translate extends SqlParserBaseListener{
                         {
                             keyTable = "";
                         }
+
+                        if(id.contains("="))
+                            id.replace("=", " == ");
 
                         if(idsVar.containsKey(keyTable))
                         {
