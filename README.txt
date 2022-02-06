@@ -20,6 +20,15 @@ sentencias LINQ tipo query soportadas en C#
 7. Compilar Main
 8. Visualizar traducción en la consola
 
+## Ejemplos de uso
+
+Adicionalmente se cargaron algunos ejemplos de uso dentro de la carpeta
+Examples dentro del código fuente junto con las saalidas esperadas bajo
+la siguiente notación:
+
+- Los archivos in#.txt representan la entrada del ejemplo
+- Los archivos out#.txt representan la traducción de la entrada correspondiente.
+
 ## Consideraciones
 
 ### Herramientas:
