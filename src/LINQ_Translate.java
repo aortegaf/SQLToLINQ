@@ -6,7 +6,6 @@ import java.util.Locale;
 
 public class LINQ_Translate extends SqlParserBaseListener{
 
-
     @Override
     public void enterRoot(SqlParser.RootContext ctx) {
         super.enterRoot(ctx);
